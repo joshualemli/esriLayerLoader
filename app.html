@@ -17,26 +17,50 @@
                 "dojo/domReady!"
             ],function( dojoReady, esriMap, esriFeatureLayer, esriArcGISDynamicMapServiceLayer ){
 
-                // use the `ready` function
+                // use the `ready` function with a "callback"
+                // pro tip: i use an anonymous function, but you don't have to!
                 dojoReady(function(){
 
+                    // create a map
                     var dumbMap = new esriMap("map", {
                         center: [-107, 43],
                         zoom: 9,
                         basemap: "gray"
                     })
 
-                    var wayAwesomeLayer = new esriFeatureLayer("https://sampleserver6.arcgisonline.com/arcgis/rest/services/USA/MapServer/0",{})
+                    // and some layers
+                    var wayAwesomeLayer = new esriFeatureLayer("https://sampleserver6.arcgisonline.com/arcgis/rest/services/USA/MapServer/0",{id:"wayAwesome"})
                     var fooLayer = new esriArcGISDynamicMapServiceLayer("https://sampleserver6.arcgisonline.com/arcgis/rest/services/USA/MapServer",{})
-                    var willFailLayer = new esriFeatureLayer("https://sdfu84ut3y3323235i22ne.com/ksajdfas",{})
+                    var willFailLayer = new esriFeatureLayer("https://sdfu84ut3y3323235i22ne.com/ksajdfas",{id:"iFailed"})
 
-                    LayerLoader(dumbMap,[
+                    // put the layers you want into an array
+                    var someLayers = [
                         wayAwesomeLayer,
                         fooLayer,
                         willFailLayer
-                    ],2500).then(function(){
+                    ]
+
+                    // load the layers into your map with the `LayerLoader` function
+                    // you can use `.then` and a callback to wait for the layers to be checked and loaded into your map
+                    LayerLoader(dumbMap,someLayers,2500).then(function(){
+                        
                         // do stuff
-                        console.log("layers are added to map and you're all set")
+                        console.log("... demo ... layers are added to map and you're all set")
+
+                        // the following stuff is just a demo of the safe way to use layers
+                        // stay safe  ; D
+
+                        // you can now safely do:
+                        var hotAssLayer
+                        
+                        hotAssLayer = dumbMap.getLayer("wayAwesome")
+                        if (hotAssLayer) console.log("... demo ... layer id=" + hotAssLayer.id + " exists!")
+                        else console.log("... demo ... layer id=\"wayAwesome\" failed the check is missing")
+                        
+                        hotAssLayer = dumbMap.getLayer("iFailed")
+                        if (hotAssLayer) console.log("... demo ... layer id=" + hotAssLayer.id + " exists!")
+                        else console.log("... demo ... layer id=\"iFailed\" failed the check is missing")
+
                     })
 
                 })
