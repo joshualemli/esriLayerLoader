@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="https://js.arcgis.com/3.24/esri/css/esri.css">
+        <script src="https://js.arcgis.com/3.24/"></script>
+        <script src="layerLoader.js"></script>
+        <script>
+
+            // EXAMPLE - use of `LayerLoader`
+
+            // require `dojo/ready` and use it as a function to wait for all `requires` to be satisfied! very nice.
+            require([
+                "dojo/ready",
+                "esri/map",
+                "esri/layers/FeatureLayer",
+                "esri/layers/ArcGISDynamicMapServiceLayer",
+                "dojo/domReady!"
+            ],function( dojoReady, esriMap, esriFeatureLayer, esriArcGISDynamicMapServiceLayer ){
+
+                // use the `ready` function
+                dojoReady(function(){
+
+                    var dumbMap = new esriMap("map", {
+                        center: [-107, 43],
+                        zoom: 9,
+                        basemap: "gray"
+                    })
+
+                    var wayAwesomeLayer = new esriFeatureLayer("https://sampleserver6.arcgisonline.com/arcgis/rest/services/USA/MapServer/0",{})
+                    var fooLayer = new esriArcGISDynamicMapServiceLayer("https://sampleserver6.arcgisonline.com/arcgis/rest/services/USA/MapServer",{})
+                    var willFailLayer = new esriFeatureLayer("https://sdfu84ut3y3323235i22ne.com/ksajdfas",{})
+
+                    LayerLoader(dumbMap,[
+                        wayAwesomeLayer,
+                        fooLayer,
+                        willFailLayer
+                    ],2500).then(function(){
+                        // do stuff
+                        console.log("layers are added to map and you're all set")
+                    })
+
+                })
+            })
+
+        </script>
+    </head>
+    <body>
+        <div id="map"></div>
+    </body>
+</html>
