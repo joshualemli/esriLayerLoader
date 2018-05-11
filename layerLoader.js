@@ -50,6 +50,7 @@ require([
         console.log("LayerLoader :: beginning an `esri/request` to " + layers.length + " layers")
         if (!map) console.log("LayerLoader :: `esri/map` missing, cannot add layers but will test them anyway")
         var defer = new dojoDeferred()
+        var failedLayers = []
         dojoPromiseAll(layers.map(function(layer){
             var urlDefer = new dojoDeferred()
             var request = esriRequest({
@@ -72,12 +73,14 @@ require([
                 function(esriRequestError) {
                     clearTimeout(killswitch)
                     console.log("LayerLoader :: failure - ",layer.url)
+                    failedLayers.push(layer)
                     urlDefer.resolve()
                 }
             )
             return urlDefer.promise
         })).then(function(){
-            console.log("LayerLoader :: finished all `esriRequests`")
+            if (map) console.log("LayerLoader :: finished adding " + (layers.length - failedLayers.length) + " layers to map")
+            if (failedLayers.length) console.log("LayerLoader :: "+failedLayers.length+" failed layers ",failedLayers)
             defer.resolve()
         })
         return defer.promise
